@@ -1,0 +1,48 @@
+The shared memory storage the Temperature Module uses is a PriorityBlockingQueue
+to keep track of the temperatures. The time interval is tracked by an AtomicInteger
+marking the start and end interval.
+
+The PriorityBlockingQueue (PBQ) is thread safe and lock-free, allowing for concurrent accesses and
+read / writes by multiple threads. This program uses 2 PBQ's, one to store the
+max values at the head and one to store the min values at the head. This allows
+for O(1) access to the minimum and maximum values. Reshuffling the PBQ takes O(logN)
+time.
+
+
+There are 3 types of threads, the orchestrator which generates the report, the
+sensor which records the temperatures, and the temperature interval which calculates
+the biggest temperature difference in the 10 minute interval. When the report is
+being generated, using a AtomicBoolean, the sensor and temperature interval threads
+wait until the report is generated. When the interval is being calculated, the
+sensors do not record more temperatures in order to keep the temperatures for that
+10 minute interval consistent.
+
+
+Each sensor thread sleeps for 1 minute before generating a random temperature.
+These temperatures are added to both of the PBQ's which does increase the space
+complexity by a factor of 2. This temperature is compared against the current
+max and min temperature for this 10 minute interval. If the temperature is lower
+than the current min or vice versa for the max, it will replace the current min
+or max for the interval. This thread will wait if the report is being generated
+or if the temperature interval is being calculated. This is to ensure no new
+max or min temps are added to the memory storage to "pollute" the interval
+and highest and lowest temperatures for the respective threads.
+
+The temperature interval thread sleeps for 10 minutes before calculating the
+temperature interval. It sets the current max temp difference to the max value
+between itself and the current interval. If the current max difference ends up
+being updates, new time stamps are updated for these new max and min temperatures
+to mark the start and end of this new max temp difference interval. Then, for the
+next 10 minute interval, the min and max temp values are reset and the start and
+end interval times are also reset. This thread also waits for the report generation
+to be complete to not affect the temp difference interval for the report
+
+The orchestrator thread generates the output as standard output to the command line.
+This thread sleeps for 1 hour before generating the report. After every hours, it
+loops till the number of hours to generate N reports where N is the number of hours stored
+within the numberHours variable. To get the 5 min and max values of the hour, it
+removes the first 5 elements from both PBQ's. To get the greatest temp diff interval,
+it simply gets the values of the difference as well as the start and end times (which
+all store the max values). After the report is generated, the shared memory PBQ's
+as well as the max temp diff value, max temp diff start and end interval, and max
+and min temps are reset for the next report. 
