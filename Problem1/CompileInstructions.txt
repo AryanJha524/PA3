@@ -1,10 +1,11 @@
 To compile and run the code for problem 1,
 run the following commands in the given order:
-  a) javac ConcurrentLinkedList.java
-  b) javac ConcurrentListDriver.java
-  c) java ConcurrentListDriver
+  a) javac ConcurrentLinkedList.java ConcurrentListDriver.java
+  b) java ConcurrentListDriver
 
 The program should print out whenever a gift is added to the chain,
 removed from the chain, as well as if the gift is on the chain or not.
-The program start and completion is marked by "simulation started" and
-"simulation complete"
+Additionally, it will simulate grabbing a gift from the bag of unordered gifts
+by using a map to keep track of which gifts have been processed onto the chain
+and off of the chain. The program start and completion is marked by "simulation
+started" and "simulation complete" respectively
