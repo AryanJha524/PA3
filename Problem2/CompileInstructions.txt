@@ -1,0 +1,7 @@
+To compile and run the code for problem 2,
+run the following commands in the given order:
+  a) javac AtmosphericTemperatureModule.java
+  b) java AtmosphericTemperatureModule
+
+The report is generated every hour, for N hours, where N is the variable
+numberHours. The report is output to the command line as a print statement.
