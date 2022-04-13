@@ -1,0 +1,26 @@
+This program utilizes the Lock-free linked list demonstrated in the
+The Art of Multiprocessor Programming 13th edition. This list has 3 methods
+add(), remove(), and contains(), the first two are lock-free and the last is
+wait-free.
+
+The add() and remove() are both lock free. This list logically marks nodes to
+remove before physically removing them. During the add() and remove() methods,
+it checks whether or not the current node / neighboring nodes are logically
+removed or not, as to not accidentally link / remove nodes that have been previously
+marked as removed. When traversing the list to add / remove nodes, each thread
+will physically remove any logically marked nodes it encounters before continuing
+to traverse the list.
+
+The contains() method doesn't deal with removing nodes, it traverses the list
+until the key for the target node is found, then checks whether or not the node
+is marked before returning the result.
+
+The program also uses Java's concurrent map to keep track of the gifts (represented
+by a number as the key). The value for each gift represented whether or not
+the gift has been processed from the bag or not (used for adding gifts to the
+chain). The use of a concurrent map allows multiple threads (servants) to "grab"
+a gift at the same time without interference from other threads.
+
+Gifts are added to the chain and removed until the addCount and removeCount reach
+the number of presents. These are atomic variables to keep the program thread
+safe.
