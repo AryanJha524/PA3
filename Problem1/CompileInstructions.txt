@@ -1,0 +1,10 @@
+To compile and run the code for problem 1,
+run the following commands in the given order:
+  a) javac ConcurrentLinkedList.java
+  b) javac ConcurrentListDriver.java
+  c) java ConcurrentListDriver
+
+The program should print out whenever a gift is added to the chain,
+removed from the chain, as well as if the gift is on the chain or not.
+The program start and completion is marked by "simulation started" and
+"simulation complete"
