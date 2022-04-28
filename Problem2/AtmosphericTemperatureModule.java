@@ -32,7 +32,7 @@ public static long startTime;
 
 public static void main(String args[]) {
 
-        startTime = (int) System.currentTimeMillis() / 1000 / 60;
+        startTime = (int) System.currentTimeMillis() / 1000;
 
         // instantiate shared memory storage
         sharedMaxMemory = new PriorityBlockingQueue<Integer>
@@ -85,8 +85,8 @@ public void run() {
                 // until all hours complete
                 while (numHoursComplete.get() < numberHours) {
                         System.out.println("Gathering temperatures...");
-                        // wait every hour to generate report
-                        Thread.sleep(1000*60*60);
+                        // wait every 20 seconds to generate report
+                        Thread.sleep(1000*20);
                         generateReport();
                         numHoursComplete.getAndIncrement();
                 }
@@ -125,8 +125,8 @@ public void generateReport() {
                 }
         }
         System.out.println("\nGreatest Temperature Difference: \n" +
-                           biggestDiff.get() + "F which occured between minute: "
-                           + intervalStart.get() + " and minute: " +
+                           biggestDiff.get() + "F which occured between second: "
+                           + intervalStart.get() + " and second: " +
                            intervalEnd.get());
 
         // clear data structure
@@ -153,8 +153,8 @@ public void run() {
                 while (!allHoursComplete.get()) {
                         // spin while report is being generated so not to interfere
                         while (reportBeingGenerated.get()) {};
-                        // every 10 minutes
-                        Thread.sleep(1000*60*10);
+                        // every 10 seconds
+                        Thread.sleep(1000*10);
                         recordTemperatureDifference();
                 }
         }
@@ -202,8 +202,8 @@ public void run() {
                         // or interval being calculated
                         while (reportBeingGenerated.get() ||
                                intervalBeingCalculated.get()) {};
-                        // every 1 minute, this thread should read a temperature
-                        Thread.sleep(1000*60);
+                        // every 1 second, this thread should read a temperature
+                        Thread.sleep(1000*1);
                         getTemperatureReading();
                 }
         }
@@ -222,7 +222,7 @@ public void getTemperatureReading() {
         sharedMinMemory.add(temp);
 
         // update our interval temperatures if needed
-        long endTime = (int) System.currentTimeMillis() / 1000 / 60;
+        long endTime = (int) System.currentTimeMillis() / 1000;
         if (temp < minTempInterval.get()) {
                 minTempInterval.set(temp);
                 curIntervalStart.set((int)(endTime - startTime) % 60);
